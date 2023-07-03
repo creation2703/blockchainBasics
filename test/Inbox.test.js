@@ -2,15 +2,15 @@ const assert = require('assert');
 const ganache = require('ganache-cli');
 const { Web3 } = require('web3'); // used to be a constructor. Now returns an object.
 const web3 = new Web3(ganache.provider());
-const {interface, bytecode} = require('../compile');
+const {abi, evm} = require('../compile');
 let accounts, inbox;
 const initialString = "Hello";
 beforeEach(async () => {
     accounts = await web3.eth.getAccounts();
-    inbox = await new web3.eth.Contract(JSON.parse(interface)) 
+    inbox = await new web3.eth.Contract(JSON.parse(abi)) 
     // tells the web3 library that there is a contract out there and it expects the following 
     // interface
-      .deploy({ data: bytecode, arguments : [initialString]}) 
+      .deploy({ data: evm.bytecode.object, arguments : [initialString]}) 
       // arguments are needed to be passed on to the constructor functions
       .send({ from: accounts[0], gas: '1000000' });
   });
